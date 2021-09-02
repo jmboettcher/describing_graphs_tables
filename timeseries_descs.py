@@ -17,7 +17,7 @@ def describe_interval_changes(x,y,ts):
     ts['change_y_per_x'] = diffs[y]/diffs[x]
 
     cap = "Within this " + x.lower() + " range, we were able to capture data at " + str(ts.shape[0]) + " " + x.lower() + "s ("
-    cap += stringify(ts[x].to_list()) + "), forming " + str(ts.shape[0] - 1) + " intervals. "
+    cap += stringify(ts[x].to_list(),"") + "), forming " + str(ts.shape[0] - 1) + " intervals. "
     if (ts[ts['change_y_per_x'] > 0].shape[0] > 0):
         cap += describe_interval_increases(x,y,ts)
     if (ts[ts['change_y_per_x'] < 0].shape[0] > 0):
@@ -29,10 +29,10 @@ def describe_max_min(x,y,ts):
     if (ts[y].max()!=ts[y].min()):
         max_val = ts[y].max()
         max_val_years = ts[ts[y] == max_val][x]
-        cap += y + " was at its highest in " + stringify(max_val_years.to_list()) + " at " + str(max_val) + ". "
+        cap += y + " was at its highest in " + stringify(max_val_years.to_list(),"") + " at " + str(max_val) + ". "
         min_val = ts[y].min()
         min_val_years = ts[ts[y] == min_val][x]
-        cap += y + " was at its lowest in " + stringify(min_val_years.to_list()) + " at " + str(min_val) + ". "
+        cap += y + " was at its lowest in " + stringify(min_val_years.to_list(),"") + " at " + str(min_val) + ". "
     return cap
 
 ### HELPERS
@@ -49,7 +49,7 @@ def describe_interval_increases(x,y,ts):
     for i in maxes.index:
         stringa = str(ts.iloc[i-1][x].astype('int64')) + "-" + str(ts.iloc[i][x].astype('int64'))
         ranges.append(stringa)
-    cap += ", showing the greatest average increase in " + y + " per " + x.lower() + " of " + str(max_change) + " in " + stringify(ranges) + ". "
+    cap += ", showing the greatest average increase in " + y + " per " + x.lower() + " of " + str(max_change) + " in " + stringify(ranges,"") + ". "
     return cap
 
 def describe_interval_decreases(x,y,ts):
@@ -65,7 +65,7 @@ def describe_interval_decreases(x,y,ts):
     for i in mins.index:
         stringa = str(ts.iloc[i-1][x].astype('int64')) + "-" + str(ts.iloc[i][x].astype('int64'))
         ranges.append(stringa)
-    cap += ", showing the greatest average decrease in " + y + " per " + x.lower() + " of " + str(min_change) + " in " + stringify(ranges) + ". "
+    cap += ", showing the greatest average decrease in " + y + " per " + x.lower() + " of " + str(min_change) + " in " + stringify(ranges,"") + ". "
     return cap
 
 def inc_dec(a,b):
@@ -86,12 +86,12 @@ def describe_change(x,y,pta,ptb):
     caption = y + " " + inc_dec(pta[1],ptb[1]) + " " + from_in_to(pta,ptb,False) + "."
     return caption
 
-def stringify(a):
+def stringify(a,b):
     list_str = ""
     for i in range(len(a)):
         if i == len(a) - 1 and len(a)>1:
             list_str += "and "
-        list_str += str(a[i])
+        list_str += str(a[i]) + b
         if i != len(a) - 1:
             if len(a)>2:
                 list_str += ","
